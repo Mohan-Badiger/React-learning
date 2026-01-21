@@ -1,5 +1,25 @@
+import { useEffect, useRef, useState } from "react"
+import TodoList from "./TodoList"
 
 const Todo = () => {
+
+  const [todos, setTodos] = useState([])
+  const inputRef = useRef(null)
+
+  const btnClick = ()=>{
+    setTodos([...todos, inputRef.current.value])
+    inputRef.current.value = ""
+  }
+
+  useEffect(()=>{
+    setTodos(JSON.parse(localStorage.getItem("todos")) || [])
+  },[])
+
+  useEffect(()=>{
+    localStorage.setItem(todos, JSON.stringify(todos))
+    console.log(todos);   
+  },[todos])
+
   return (
     <div className='h-screen w-full flex bg-gray-200 items-center justify-center'>
         <div className='h-130 w-110 bg-gray-500 text-center p-7'>
@@ -7,9 +27,10 @@ const Todo = () => {
             Todo App
           </div>
           <div className='mt-8 flex gap-3 justify-center'>
-            <input type="text" placeholder='Enter Text' className='border outline-0 px-5 py-2 text-md bg-gray-300 w-full'/>
-            <button className='border px-6 bg-gray-300 '>ADD</button>
+            <input name="todoinput" ref={inputRef} type="text" required placeholder='Enter Text' className='border outline-0 px-5 py-2 text-md bg-gray-300 w-full'/>
+            <button onClick={btnClick} className='border px-6 bg-gray-300 '>ADD</button>
           </div>
+          <TodoList todos={todos}/>
         </div>
     </div>
   )
